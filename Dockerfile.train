@@ -1,0 +1,14 @@
+FROM python:3.10-slim
+
+ENV MAX_EPOCHS=100
+ENV MODEL_ROOT_DIR="/results"
+ENV ML_DATA_DIR="/data"
+
+COPY ./dist/tmsg-0.0.1-py3-none-any.whl /app/
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir tmsg-0.0.1-py3-none-any.whl && rm tmsg-0.0.1-py3-none-any.whl
+
+CMD train
+

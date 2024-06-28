@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "training-multiple-models-on-a-single-gpu"
+name = "tmsg"
 dynamic = ["version"]
 description = ''
 readme = "README.md"
@@ -24,22 +24,35 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "torch",
+  "torchvision",
+  "lightning[extra]"
+]
+
+[project.scripts]
+train = "tmsg.main:train"
 
 [project.urls]
 Documentation = "https://github.com/unknown/training-multiple-models-on-a-single-gpu#readme"
 Issues = "https://github.com/unknown/training-multiple-models-on-a-single-gpu/issues"
 Source = "https://github.com/unknown/training-multiple-models-on-a-single-gpu"
 
-[tool.hatch.version]
-path = "src/training_multiple_models_on_a_single_gpu/__about__.py"
+[tool.hatch.build.targets.wheel]
+packages = ["src/tmsg"]
 
+[tool.hatch.version]
+path = "src/tmsg/__about__.py"
+
+# Default dev environment
 [tool.hatch.envs.default]
+path = ".venv"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
 ]
 [tool.hatch.envs.default.scripts]
+train = "python src/tmsg/main.py"
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
 cov-report = [
@@ -50,6 +63,30 @@ cov = [
   "test-cov",
   "cov-report",
 ]
+
+# UAT environment to test installation of package
+[tool.hatch.envs.uat]
+detached = true
+path = ".uat"
+dependencies = []
+
+[tool.hatch.envs.uat.scripts]
+install = "pip install ./dist/training_multiple_models_on_a_single_gpu-0.0.1-py3-none-any.whl"
+
+# Experiment environmnent to run docker containers
+[tool.hatch.envs.expt]
+path = ".expt"
+detached = true
+dependencies = [
+  "docker",
+  "jupyterlab",
+  "matplotlib",
+  "seaborn",
+  "pandas"
+]
+
+[tool.hatch.envs.expt.scripts]
+build = "/bin/bash ./build_train_docker.sh"
 
 [[tool.hatch.envs.all.matrix]]
 python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
