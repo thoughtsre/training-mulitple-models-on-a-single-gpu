@@ -1,3 +1,5 @@
+> **This repo has been migrated to [GitHub](https://github.com/thoughtsre/training-mulitple-models-on-a-single-gpu).**
+
 # Training multiple models on a single GPU
 This is an experiment to see how training multiple models concurrently on a single GPU migh affect training times.
 
